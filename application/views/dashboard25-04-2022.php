@@ -93,12 +93,11 @@
 			<ul>
 			<form action="<?= base_url('admin/welcome/checkTherapist')?>" method="post">
 				<input type='hidden' value='' name="therapist_id" id='therapist_id'>
-				<input type='hidden' value='' name="move_date" id='move_date'>
-				<!--<li><div class = "col-md-12">Start Date<input type="date" name="start_date" value=""></div></li>
-				<li><div class = "col-md-12">End Date<input type="date" name="end_date" value=""></div></li>-->
+				<li><div class = "col-md-12">Start Date<input type="date" name="start_date" value=""></div></li>
+				<li><div class = "col-md-12">End Date<input type="date" name="end_date" value=""></div></li>
 				<li><div class = "col-md-12 showAttandance"></div></li>
-				<!--<div class = "col-md-12"><input type="radio" name="move_to_last" value="2">Move To First </div>-->
-                <li><div class = "col-md-12"><input type="radio" name="move_to_last" value="1">Move To last</div></li>
+				<li><div class = "col-md-12"><input type="radio" name="move_to_last" value="2">Move To First </div> 
+                <div class = "col-md-12"><input type="radio" name="move_to_last" value="1">Move To last</div></li>
 				<li><input type="submit" class="btn btn-primary btn-custom" value="submit"> <input type="button" class="btn btn-primary btn-custom btn_close" value="Close"></li>
 			</form>
 			</ul>
@@ -328,7 +327,11 @@
         return dateStr;
     }
 
-   
+  $('#findDate').submit(function(e){
+    e.preventDefault();
+	$("#calendar").fullCalendar("gotoDate", $('#find').val());
+  
+  })  
   $("#services").change(function() {
     //   console.log($(this).val());
     //   alert('wqryrtsty');
@@ -461,7 +464,6 @@
         $('#time-panel-end').hide();
     });
 
-
     $('#calendar').fullCalendar({
         defaultView: 'agendaDay',
         groupByResource: true,
@@ -566,6 +568,7 @@
     //$('#calendar table>thead tr th').addClass('context-menu-one box menu-1');
     //$('#calendar table table>tbody tr td:nth-child(2)').addClass('context-menu-one box menu-1');
    
+   
 
 
    /* $('#calendar table>thead tr th').contextmenu(function() {
@@ -604,39 +607,10 @@
 
     $.contextMenu('update'); // update all open menus
 */
-
   });
 
 
   $(document).ready(function(){
-
-	$('#findDate').submit(function(e){
-		e.preventDefault();
-		$("#calendar").fullCalendar("gotoDate", $('#find').val());
-		$(".context-menu").hide();
-		$("#therapist_id").val("");
-		$('#calendar table>thead tr th').addClass('context-menu-one box menu-1');
-		contextmenu();
-	
-	});
-
-	$('.fc-today-button').click(function(){
-		$(".context-menu").hide();
-		$("#therapist_id").val("");
-		$('#calendar table>thead tr th').addClass('context-menu-one box menu-1');
-		contextmenu();
-		
-		return false;
-	});
-
-	$(document).on('click','.fc-next-button, .fc-prev-button',function(){
-		$(".context-menu").hide();
-		$("#therapist_id").val("");
-		$('#calendar table>thead tr th').addClass('context-menu-one box menu-1');
-		contextmenu();
-	});
-
-
 	$('#calendar table>thead tr th').addClass('context-menu-one box menu-1');
 	// Hide context menu
 	$('.btn_close').bind('contextmenu click',function(){
@@ -644,58 +618,43 @@
 		$("#therapist_id").val("");
 	});
 
+	// disable right click and show custom context menu
+	$(".context-menu-one").bind('contextmenu', function (e) {
+		var id = $(this).data('resource-id');
 
-	contextmenu();
-	function contextmenu(){
-		// disable right click and show custom context menu
-		$(".context-menu-one").bind('contextmenu', function (e) {
-			var id = $(this).data('resource-id');
+		$("#therapist_id").val(id);
 
-			$("#therapist_id").val(id);
-
-			var formattedDate = new Date($('.fc-header-toolbar').find('div h2').text());
-			var d = formattedDate.getDate();
-			var m =  formattedDate.getMonth();
-			m += 1;
-			var y = formattedDate.getFullYear();
-			var cdate = y+'-'+m+'-'+d;
-
-			$("#move_date").val(cdate);
-
-			$.ajax({
-				url: "<?= base_url("admin/welcome/showTherapistAttandance")?>",
-				type: 'GET',
-				data: {therapist_id: id},
-				//dataType: "json",
-				success: function(data) {
-					if(data == 0)
-					{
-						$('.showAttandance').html('Absent');
-					}else{
-						$('.showAttandance').html('Available');
-						
-					}
-
+		$.ajax({
+			url: "<?= base_url("admin/welcome/showTherapistAttandance")?>",
+			type: 'GET',
+			data: {therapist_id: id},
+			//dataType: "json",
+			success: function(data) {
+				if(data == 0)
+				{
+					$('.showAttandance').html('Absent');
+				}else{
+					$('.showAttandance').html('Available');
+					
 				}
-			});
-							
-			var top = e.pageY+5;
-			var left = e.pageX;
 
-			// Show contextmenu
-			$(".context-menu").toggle(100).css({
-				top: top + "px",
-				left: left + "px"
-			});
-
-			// Disable default menu
-			return false;
-		
-			
+			}
 		});
-	}
+						
+		var top = e.pageY+5;
+		var left = e.pageX;
 
+		// Show contextmenu
+		$(".context-menu").toggle(100).css({
+			top: top + "px",
+			left: left + "px"
+		});
+
+		// Disable default menu
+		return false;
 	
+		
+	});
 
 	// disable context-menu from custom menu
 	$('.context-menu').bind('contextmenu',function(){

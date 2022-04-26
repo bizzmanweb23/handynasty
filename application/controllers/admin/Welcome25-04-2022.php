@@ -76,17 +76,16 @@ class Welcome extends CI_Controller {
    public function checkTherapist(){
 
 	//$therapist_id =	$this->db->post('therapist_id');
-
      extract($_POST);   
      $data=array(
-        /*'start_date' => $start_date,
-		'end_date' => $end_date,*/
+        'start_date' => $start_date,
+		'end_date' => $end_date,
         'therapist_id' => $therapist_id,
 		'move_to_last' => $move_to_last,
-        'date' => $move_date //date('Y-m-d')
+        'date' => date('Y-m-d')
      );
 	
-		$check_therapist_query = $this->db->query("SELECT * FROM check_therapist");
+	$check_therapist_query = $this->db->query("SELECT * FROM check_therapist");
 		$check_therapist_rownum = $check_therapist_query->num_rows();
 		
 		if($check_therapist_rownum > 0){
@@ -96,6 +95,20 @@ class Welcome extends CI_Controller {
 			$insert = $this->Auth->insertDur($data);
 		}
      
+     /*if($insert == true){
+        $orderAsc = $this->Auth->checkOrderAsc("SELECT * FROM therapists WHERE order_id='0' ORDER BY order_id ASC");
+        $orderDESC = $this->Auth->checkOrderAsc("SELECT * FROM therapists WHERE order_id='0' ORDER BY order_id DESC");
+        if(!empty($orderAsc)){
+            $therapist_id = $orderAsc[0]['id'];
+            $order_id = $orderDESC[0]['order_id'];
+            $data=array(
+                'order_id'=> $order_id + 1
+            );
+        
+           $this->Main->update('id',$therapist_id, $data,'therapists');
+        }
+        
+     }*/
 	 if($insert == true){
 		 redirect('dashboard');
 	 }
@@ -106,26 +119,30 @@ class Welcome extends CI_Controller {
     $data_duration =  $this->Auth->getAllDuration();
     if(!empty($data_duration)){
         $therapist_id = $data_duration[0]['therapist_id'];
-		/*$start_date = $data_duration[0]['start_date']; 
-		$end_date = $data_duration[0]['end_date']; */
-		$move_date = $data_duration[0]['date'];
+		$start_date = $data_duration[0]['start_date']; 
+		$end_date = $data_duration[0]['end_date']; 
 		$move_to_last = $data_duration[0]['move_to_last'];
 	
 			
-		if(strtotime($move_date) == strtotime(date('Y-m-d'))){
-			if($move_to_last == 1){  //Move to Last
+		if(strtotime($start_date) <= strtotime(date('Y-m-d'))  && strtotime($end_date) >= strtotime(date('Y-m-d'))){
+			if($move_to_last == 2){  //Move to First
+				$orderAsc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees  ORDER BY order_id ASC");
+				$order_id = $orderAsc[0]['order_id'];
+				$data=array(
+					'order_id'=> $order_id - 1,
+					'date'=> date("Y-m-d"),
+				);
+				$this->Main->update('user_id',$therapist_id, $data,'xin_employees');
+
+			}else{
 				$orderDesc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees ORDER BY order_id DESC");
-				$orderAsc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees WHERE user_id= $therapist_id "); 
-				if(!empty($orderAsc)){
-					$order_id = $orderDesc[0]['order_id'];
-					$data=array(
-						'order_id'=> $order_id + 1,
-						'date'=> date("Y-m-d"),
-					);
-					$this->Main->update('user_id',$therapist_id, $data,'xin_employees');
-				}
+				$order_id = $orderDesc[0]['order_id'];
+				$data=array(
+					'order_id'=> $order_id + 1,
+					'date'=> date("Y-m-d"),
+				);
+				$this->Main->update('user_id',$therapist_id, $data,'xin_employees');
 			}
-			
 		}else{
 			$orderAsc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees  ORDER BY order_id ASC");
 			$orderDesc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees  ORDER BY order_id DESC");
@@ -144,21 +161,8 @@ class Welcome extends CI_Controller {
 		}
 			
     }else{
-		$orderAsc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees  ORDER BY order_id ASC");
-		$orderDesc = $this->Auth->checkOrderAsc("SELECT * FROM xin_employees  ORDER BY order_id DESC");
-
-		$therapist_id = $orderAsc[0]['user_id'];
-		$date = $orderAsc[0]['date'];
-		$order_id = $orderDesc[0]['order_id'];
-
-		if(date('Y-m-d',strtotime($date)) != date('Y-m-d')){
-			$data=array(
-				'order_id'=> $order_id + 1,
-				'date'=> date("Y-m-d"),
-			);
-			$this->Main->update('user_id',$therapist_id, $data,'xin_employees');
-		}
-	}
+    
+    }
 
     $therapy= $this->Auth->getAllTherapistH();
     // echo '<pre>',
