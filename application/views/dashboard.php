@@ -84,6 +84,10 @@
     cursor: pointer;
     *background-color: #7fffd4;
 }
+.chosen-container{
+	width: 100% !important;
+	height: 45px !important;
+}
 </style>    
 
 <div class="container">
@@ -106,17 +110,21 @@
         
     </div>
 </div>
-<div class="content-wrapper">
+
+<div class="content-wrapper" style="margin-left: 280px;">
    
-    
-    <h2 class="d_day">
-    <span><form action="" id="findDate"><input type="date" id="find" name="date" value="<?= isset($_GET['date']) ? date('Y-m-d', strtotime($_GET['date'])) : date('Y-m-d') ?>" /><input type="submit" value="Find" /></form></span>
-    </h2>
-	
-<div id='calendar'></div>
+    <div class="container-fluid py-4 ">
+		<h2 class="d_day">
+		<span><form action="" id="findDate"><input type="date" id="find" name="date" value="<?= isset($_GET['date']) ? date('Y-m-d', strtotime($_GET['date'])) : date('Y-m-d') ?>" /><input type="submit" value="Find" /></form></span>
+		</h2>
+
+		<div id='calendar' style="width: 1200px;"></div>
+			
+	</div>
+
 
 <div class="modal fade formModal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:left;">
-<div class="modal-dialog">
+<div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header">
         <h5>CREATE APPOINTMENT</h5>
@@ -135,25 +143,26 @@
                             <!-- ?php $id=(int)$_GET['id']; ?-->
                             <!--?php echo '<h1>'.$id.'</h1>';?-->
                             <input type="hidden" class="form-control" id="thera_id" name="thera_id"  />
-                            <div class="form-group">
-                                <label for="customer_num" class="col-sm-6 control-label">Customer Number</label>
-                                <div class="col-sm-12">
-                                    <input type="text" class="form-control" id="customer_num" name="customer_num" placeholder="Customer Number" />
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="name" class="col-sm-6 control-label">Customer Name</label>
-                                <div class="col-sm-12">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Customer Name" />
-                                </div>
-                            </div>
-
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="customer_num" class="col-sm-6 control-label">Customer Number</label>
+										<input type="text" class="form-control" id="customer_num" name="customer_num" placeholder="Customer Number" pattern="[0-9]+"/>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="name" class="col-sm-6 control-label">Customer Name</label>
+										<input type="text" class="form-control" id="name" name="name" placeholder="Customer Name" pattern="[a-zA-Z]+" />
+									</div>
+								</div>
+							</div>
+                            
                             <div class="form-group ">
                                 <label for="services" class="col-sm-6 control-label">Services 
                                 </label>
-                                <div class="col-sm-12">
-                                <select data-placeholder="" multiple class="chosen-select form-control" name="service[]" id="services" style="height: 45px !important;">
+                                <div class="col-md-12">
+                                <select multiple class=" chosen-select form-control" data-live-search="true" name="service[]" id="services" style="height: 45px !important;">
                                     <?php foreach($service as $services): ?>
                                     <option value="<?= $services['id']?>"><?= $services['service_name']?></option>
                                 <?php endforeach; ?> 
@@ -161,147 +170,48 @@
                                 </select>
                                 </div>
                             </div>  
-
-                            <div class="form-group ">
-                                 <label for="amount" class="col-sm-6 control-label">Total Amount</label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="amount" id="amount" placeholder="Total Amount" value="" readonly>
-                                    </div>
-                            </div> 
-                    
-                            <div class="form-group ">
-                                 <label for="sduration" class="col-sm-6 control-label">Duration</label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="sduration" id="sduration" placeholder="Total Duration" value="" readonly>
-                                    </div>
-                            </div> 
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="amount" class="col-sm-6 control-label">Total Amount</label>
+										<input type="text" class="form-control" name="amount" id="amount" placeholder="Total Amount" value="" readonly>
+									</div>
+								</div> 
+						
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="sduration" class="col-sm-6 control-label">Duration</label>
+										<input type="text" class="form-control" name="sduration" id="sduration" placeholder="Total Duration" value="" readonly>
+									</div>
+								</div> 
+							</div>
+                            
 
                             <div class="form-group">
                                 <label for="start-date" class="col-sm-3 control-label">Start</label>
-                                <div class="input-group col-sm-6 date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="start" data-link-format="yyyy-mm-dd" >
-                                    <input type="date" class="form-control" id="start-date" name="start_date" placeholder="Start Date"  style="background-color: white; cursor: default;" />
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="time" name="start_time" id="start-time" class="form-control"  style="background-color: white; cursor: default;"/>
-                                    <!-- <div class="time-panel" id="time-panel-start">
-                                        <ul class="time-panel-ul">
-                                            <li data-value="00:00">00:00</li>
-                                            <li data-value="00:30">00:30</li>
-                                            <li data-value="01:00">01:00</li>
-                                            <li data-value="01:30">01:30</li>
-                                            <li data-value="02:00">02:00</li>
-                                            <li data-value="02:30">02:30</li>
-                                            <li data-value="03:00">03:00</li>
-                                            <li data-value="03:30">03:30</li>
-                                            <li data-value="04:00">04:00</li>
-                                            <li data-value="04:30">04:30</li>
-                                            <li data-value="05:00">05:00</li>
-                                            <li data-value="05:30">05:30</li>
-                                            <li data-value="06:00">06:00</li>
-                                            <li data-value="06:30">06:30</li>
-                                            <li data-value="07:00">07:00</li>
-                                            <li data-value="07:30">07:30</li>
-                                            <li data-value="08:00">08:00</li>
-                                            <li data-value="08:30">08:30</li>
-                                            <li data-value="09:00">09:00</li>
-                                            <li data-value="09:30">09:30</li>
-                                            <li data-value="10:00">10:00</li>
-                                            <li data-value="10:30">10:30</li>
-                                            <li data-value="11:00">11:00</li>
-                                            <li data-value="11:30">11:30</li>
-                                            <li data-value="12:00">12:00</li>
-                                            <li data-value="12:30">12:30</li>
-                                            <li data-value="13:00">13:00</li>
-                                            <li data-value="13:30">13:30</li>
-                                            <li data-value="14:00">14:00</li>
-                                            <li data-value="14:30">14:30</li>
-                                            <li data-value="15:00">15:00</li>
-                                            <li data-value="15:30">15:30</li>
-                                            <li data-value="16:00">16:00</li>
-                                            <li data-value="16:30">16:30</li>
-                                            <li data-value="17:00">17:00</li>
-                                            <li data-value="17:30">17:30</li>
-                                            <li data-value="18:00">18:00</li>
-                                            <li data-value="18:30">18:30</li>
-                                            <li data-value="19:00">19:00</li>
-                                            <li data-value="19:30">19:30</li>
-                                            <li data-value="20:00">20:00</li>
-                                            <li data-value="20:30">20:30</li>
-                                            <li data-value="21:00">21:00</li>
-                                            <li data-value="21:30">21:30</li>
-                                            <li data-value="22:00">22:00</li>
-                                            <li data-value="22:30">22:30</li>
-                                            <li data-value="23:00">23:00</li>
-                                            <li data-value="23:30">23:30</li>
-                                                                                    </ul>
-                                    </div> -->
-                                </div>
+								<div class="row">
+									<div class="input-group col-sm-6 date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="start" data-link-format="yyyy-mm-dd" >
+                                    	<input type="date" class="form-control" id="start-date" name="start_date" placeholder="Start Date"  style="background-color: white; cursor: default;" />
+                                    	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                	</div>
+									<div class="col-sm-3">
+										<input type="time" name="start_time" id="start-time" class="form-control"  style="background-color: white; cursor: default;"/>
+									</div>
+								</div>
                             </div>
 
                             <div class="form-group" id="end-group">
                                 <label for="end" class="col-sm-3 control-label">End</label>
-                                <div class="input-group col-sm-6 form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="end" data-link-format="yyyy-mm-dd" >
-                                    <input type="date" class="form-control" placeholder="End Date" name="end_date" id="end-date"  style="background-color: white; cursor: default;" />
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="time" name="end_time" id="end-time" class="form-control"   style="background-color: white; cursor: default;" />
-                                    <!-- <div class="time-panel" id="time-panel-end">
-                                         <ul class="time-panel-ul">
-                                            <li data-value="00:00">00:00</li>
-                                            <li data-value="00:30">00:30</li>
-                                            <li data-value="01:00">01:00</li>
-                                            <li data-value="01:30">01:30</li>
-                                            <li data-value="02:00">02:00</li>
-                                            <li data-value="02:30">02:30</li>
-                                            <li data-value="03:00">03:00</li>
-                                            <li data-value="03:30">03:30</li>
-                                            <li data-value="04:00">04:00</li>
-                                            <li data-value="04:30">04:30</li>
-                                            <li data-value="05:00">05:00</li>
-                                            <li data-value="05:30">05:30</li>
-                                            <li data-value="06:00">06:00</li>
-                                            <li data-value="06:30">06:30</li>
-                                            <li data-value="07:00">07:00</li>
-                                            <li data-value="07:30">07:30</li>
-                                            <li data-value="08:00">08:00</li>
-                                            <li data-value="08:30">08:30</li>
-                                            <li data-value="09:00">09:00</li>
-                                            <li data-value="09:30">09:30</li>
-                                            <li data-value="10:00">10:00</li>
-                                            <li data-value="10:30">10:30</li>
-                                            <li data-value="11:00">11:00</li>
-                                            <li data-value="11:30">11:30</li>
-                                            <li data-value="12:00">12:00</li>
-                                            <li data-value="12:30">12:30</li>
-                                            <li data-value="13:00">13:00</li>
-                                            <li data-value="13:30">13:30</li>
-                                            <li data-value="14:00">14:00</li>
-                                            <li data-value="14:30">14:30</li>
-                                            <li data-value="15:00">15:00</li>
-                                            <li data-value="15:30">15:30</li>
-                                            <li data-value="16:00">16:00</li>
-                                            <li data-value="16:30">16:30</li>
-                                            <li data-value="17:00">17:00</li>
-                                            <li data-value="17:30">17:30</li>
-                                            <li data-value="18:00">18:00</li>
-                                            <li data-value="18:30">18:30</li>
-                                            <li data-value="19:00">19:00</li>
-                                            <li data-value="19:30">19:30</li>
-                                            <li data-value="20:00">20:00</li>
-                                            <li data-value="20:30">20:30</li>
-                                            <li data-value="21:00">21:00</li>
-                                            <li data-value="21:30">21:30</li>
-                                            <li data-value="22:00">22:00</li>
-                                            <li data-value="22:30">22:30</li>
-                                            <li data-value="23:00">23:00</li>
-                                            <li data-value="23:30">23:30</li>
-                                        </ul>
-                                    </div> -->
-                                </div>
+								<div class="row">
+									<div class="input-group col-sm-6 form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="end" data-link-format="yyyy-mm-dd">
+                                    	<input type="date" class="form-control" placeholder="End Date" name="end_date" id="end-date"  style="background-color: white; cursor: default;"/>
+                                    	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									</div>
+									<div class="col-sm-3">
+										<input type="time" name="end_time" id="end-time" class="form-control"   style="background-color: white; cursor: default;" />
+									</div>
+								</div> 
                             </div>
-                            
 
                         </div>
 
@@ -322,7 +232,12 @@
 </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 </div>
+
 <script>
+	$(function () {
+		$('select').selectpicker();
+	});
+	
     // format time displayed
     function formatTimeStr(dateStr) {
         return dateStr;
@@ -652,7 +567,7 @@
 			var id = $(this).data('resource-id');
 
 			$("#therapist_id").val(id);
-
+			
 			var formattedDate = new Date($('.fc-header-toolbar').find('div h2').text());
 			var d = formattedDate.getDate();
 			var m =  formattedDate.getMonth();
@@ -672,7 +587,7 @@
 					{
 						$('.showAttandance').html('Absent');
 					}else{
-						$('.showAttandance').html('Available');
+						$('.showAttandance').html('Present');
 						
 					}
 
@@ -682,7 +597,7 @@
 			var top = e.pageY+5;
 			var left = e.pageX;
 
-			// Show contextmenu
+			// Show contextmenu right click move to last
 			$(".context-menu").toggle(100).css({
 				top: top + "px",
 				left: left + "px"
@@ -711,10 +626,11 @@
 	// });
 
 });
-</script>
-<!-- <script>
-      $(".chosen-select").chosen({
+$(".chosen-select").chosen({
   no_results_text: "Oops, nothing found!"
 })
+</script>
+<!-- <script>
+     
   </script> -->
 

@@ -185,6 +185,7 @@ class Welcome extends CI_Controller {
 				'title'=> 'No Preference',
 			];
     	$event = $this->Auth->getAllEvent();
+		$data2[] = [0];
 		foreach($event as $events){
 			$resourceId = $events['therapist_id'];  
 			$name = $events['customer_name'];
@@ -192,6 +193,7 @@ class Welcome extends CI_Controller {
 			$startTime = $events['start_time'];
 			$end = $events['end_date'];
 			$endTime = $events['end_time'];
+			
 			$data2[] = 
 			[
 				'resourceId' =>$resourceId,
